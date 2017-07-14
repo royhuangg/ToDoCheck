@@ -1,6 +1,7 @@
 package com.roy.todo.activities
 
 import android.os.Bundle
+import butterknife.ButterKnife
 import com.grasea.grandroid.mvp.GrandroidActivity
 import com.grasea.grandroid.mvp.GrandroidPresenter
 import com.roy.todo.presenter.BasePresenter
@@ -40,6 +41,7 @@ abstract class BaseActivity<P : GrandroidPresenter<*>> : GrandroidActivity<P>() 
     }
     open fun initViews() {
         setContentView(getContentResource())
+        ButterKnife.bind(this)
     }
 
     open fun getContentResource(): Int {
