@@ -14,6 +14,7 @@ import com.roy.todo.presenter.MainPresenter
 import com.roy.todo.util.loge
 import jp.wasabeef.blurry.Blurry
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.intentFor
 
 @UsingPresenter(MainPresenter::class)
 class MainActivity : BaseActivity<MainPresenter>() {
@@ -22,8 +23,7 @@ class MainActivity : BaseActivity<MainPresenter>() {
 
     override fun initViews() {
         super.initViews()
-        val layoutManager = LinearLayoutManager(this)
-        recyclerview.layoutManager = layoutManager
+        recyclerview.layoutManager = LinearLayoutManager(this)
         recyclerview.setHasFixedSize(true)
 
         var datas = ArrayList<TodoThings>()
@@ -63,6 +63,11 @@ class MainActivity : BaseActivity<MainPresenter>() {
     @OnClick(R.id.btnAdd)
     fun onClickAdd(view: View) {
         getPresenter().onAddNewThings(TodoThings("test1", false))
+    }
+
+    @OnClick(R.id.btnCalendar)
+    fun onClickGoToCalendar(view: View) {
+        startActivity(intentFor<CalendarActivity>())
     }
 
     fun onAddSuccess(todoThingsList: ArrayList<TodoThings>) {

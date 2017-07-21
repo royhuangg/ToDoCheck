@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="calendarDate"
+            type="com.roy.todo.data.CalendarDate"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/common_padding"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@{calendarDate.today?@drawable/circle_red:@drawable/circle_white}"
+            android:gravity="center"
+            android:padding="@dimen/common_padding"
+            android:text="@{calendarDate.dateStr}"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:text="31"/>
+
+    </LinearLayout>
+
+
+</layout>
