@@ -1,36 +1,49 @@
 package com.roy.todo.activities
 
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import butterknife.OnClick
-import com.github.nitrico.lastadapter.BR
-import com.github.nitrico.lastadapter.LastAdapter
 import com.grasea.grandroid.mvp.UsingPresenter
 import com.roy.todo.R
+import com.roy.todo.adapters.CalendarViewpagerAdapter
 import com.roy.todo.data.CalendarDate
+import com.roy.todo.fragments.CalendarFragment
 import com.roy.todo.presenter.CalendarPresenter
 import kotlinx.android.synthetic.main.activity_calendar.*
+import org.jetbrains.anko.support.v4.onPageChangeListener
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 @UsingPresenter(CalendarPresenter::class)
 class CalendarActivity : BaseActivity<CalendarPresenter>() {
     val today: Calendar = Calendar.getInstance()
     val currentCalendar: Calendar = Calendar.getInstance()
-
+    lateinit var calendarPagerAdapter: CalendarViewpagerAdapter
+    var currentIndex: Int = 1
     override fun initViews() {
         super.initViews()
-        recyclerview.layoutManager = GridLayoutManager(this, 7)
-        recyclerview.setHasFixedSize(true)
-        loadCalendar()
+        initViewPager()
     }
 
-    private fun loadCalendar() {
-        tvTitle.text = getString(R.string.current_month, currentCalendar.get(Calendar.MONTH) + 1)
-        LastAdapter(getCalendarData(), BR.calendarDate)
-                .map<CalendarDate>(R.layout.item_calendar)
-                .into(recyclerview)
+    private fun initViewPager() {
+        var fragments = ArrayList<CalendarFragment>()
+        val preCalendar: Calendar = Calendar.getInstance()
+        preCalendar.add(Calendar.MONTH, -1)
+        val nextCalendar: Calendar = Calendar.getInstance()
+        nextCalendar.add(Calendar.MONTH, 1)
+        fragments.add(CalendarFragment.newInstance(preCalendar))
+        fragments.add(CalendarFragment.newInstance(Calendar.getInstance()))
+        fragments.add(CalendarFragment.newInstance(nextCalendar))
+
+        calendarPagerAdapter = CalendarViewpagerAdapter(supportFragmentManager, fragments)
+        viewpager.adapter = calendarPagerAdapter
+        viewpager.onPageChangeListener {
+            onPageSelected {
+                tvTitle.text = getString(R.string.current_month, fragments.get(it).currentCalendar.get(Calendar.MONTH) + 1)
+            }
+        }
+        viewpager.currentItem = 1
+
     }
 
 
@@ -70,10 +83,9 @@ class CalendarActivity : BaseActivity<CalendarPresenter>() {
     @OnClick(R.id.btnPrevious, R.id.btnNext)
     fun onClick(view: View) {
         when (view.id) {
-            R.id.btnPrevious -> currentCalendar.add(Calendar.MONTH, -1)
-            R.id.btnNext -> currentCalendar.add(Calendar.MONTH, 1)
+            R.id.btnPrevious -> viewpager.currentItem = viewpager.currentItem - 1
+            R.id.btnNext -> viewpager.currentItem = viewpager.currentItem + 1
         }
-        loadCalendar()
     }
 }
 
